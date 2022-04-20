@@ -1,0 +1,9 @@
+@import "~primevue/resources/themes/lara-dark-teal/theme.css";
+@import "~primevue/resources/primevue.min.css";
+@import "~primeicons/primeicons.css";
+@import "~primeflex/primeflex.css";
+
+body {
+  background: var(--surface-d);
+  color: var(--text-color);
+}
