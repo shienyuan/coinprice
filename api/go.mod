@@ -1,4 +1,4 @@
-module coinprice-api-v1
+module coinprice-api
 
 go 1.17
 

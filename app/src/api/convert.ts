@@ -15,16 +15,28 @@ export const convert = async (): Promise<boolean> => {
     return false
 }
 
-export interface Crypto {
+export interface Currency {
     id: number
     name: string
     sign: string
     symbol: string
 }
 
-export const listCrypto = async (): Promise<Crypto[] | undefined> => {
+export const listCrypto = async (): Promise<Currency[]> => {
     const { data } = await useAxios(
         '/list/crypto',
+        {
+            method: 'GET',
+        },
+        axios
+    )
+
+    return data.value.data
+}
+
+export const listFiat = async (): Promise<Currency[]> => {
+    const { data } = await useAxios(
+        '/list/fiat',
         {
             method: 'GET',
         },

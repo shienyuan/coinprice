@@ -1,11 +1,8 @@
 package cmcclient
 
 import (
-	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 )
 
@@ -15,18 +12,17 @@ type CMCClient struct {
 	*http.Client
 }
 
-func NewCMCClient(baseURl string) *CMCClient {
+func NewCMCClient(baseURl string, apiKey string) *CMCClient {
 	httpClient := &http.Client{}
 	httpBaseURL := &url.URL{
 		Scheme: "https",
 		Host:   baseURl,
 	}
-	httpApiKey := "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c"
 
 	return &CMCClient{
 		Client:  httpClient,
 		baseURL: httpBaseURL,
-		apiKey:  httpApiKey,
+		apiKey:  apiKey,
 	}
 }
 
@@ -58,25 +54,11 @@ func (c *CMCClient) Get(endpoint string, query []*QueryParam) ([]byte, error) {
 	}
 	req.URL.RawQuery = q.Encode()
 
-	reqDump, err := httputil.DumpRequest(req, false)
-	if err != nil {
-		return nil, err
-	}
-	log.Print("Request:")
-	fmt.Printf("%s", reqDump)
-
 	resp, err := c.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-
-	respDump, err := httputil.DumpResponse(resp, true)
-	if err != nil {
-		return nil, err
-	}
-	log.Print("Response:")
-	fmt.Printf("%s", respDump)
 
 	return ioutil.ReadAll(resp.Body)
 }
