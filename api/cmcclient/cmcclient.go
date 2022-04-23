@@ -1,6 +1,7 @@
 package cmcclient
 
 import (
+	"bytes"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -53,6 +54,23 @@ func (c *CMCClient) Get(endpoint string, query []*QueryParam) ([]byte, error) {
 		q.Add(v.Key, v.Value)
 	}
 	req.URL.RawQuery = q.Encode()
+
+	resp, err := c.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
+}
+
+func (c *CMCClient) Post(endpoint string, body []byte) ([]byte, error) {
+	req, err := http.NewRequest(http.MethodPost, c.endpoint(endpoint), bytes.NewBuffer(body))
+	if err != nil {
+		return nil, err
+	}
+
+	c.addHeader(req)
 
 	resp, err := c.Do(req)
 	if err != nil {

@@ -1,18 +1,18 @@
 import { useAxios } from '@vueuse/integrations/useAxios'
 import axios from '.'
 
-export const convert = async (): Promise<boolean> => {
+export const convert = async (req: any): Promise<number> => {
     const { data } = await useAxios(
         '/convert',
         {
-            method: 'GET',
+            method: 'POST',
+            data: req,
         },
         axios
     )
 
-    console.log(data)
-
-    return false
+    console.log(data.value.data)
+    return data.value.data[req.from.id].quote[req.to.id].price as number
 }
 
 export interface Currency {
