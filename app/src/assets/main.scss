@@ -6,4 +6,10 @@
 body {
   background: var(--surface-d);
   color: var(--text-color);
+  font-family: sans-serif;
+}
+
+a {
+  color: inherit; /* blue colors for links too */
+  text-decoration: inherit; /* no underline */
 }
