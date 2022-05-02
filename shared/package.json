@@ -1,0 +1,8 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "sy97",
+  "license": "MIT",
+  "private": true
+}
