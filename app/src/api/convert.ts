@@ -1,4 +1,9 @@
+import { inject } from 'vue'
 import { useAxios } from '@vueuse/integrations/useAxios'
+import { Functions, httpsCallable } from 'firebase/functions'
+import { IConvertorCurrency } from 'shared/convertor.model'
+import { functions } from '@/plugins/firebase'
+
 import axios from '.'
 
 export const convert = async (req: any): Promise<number> => {
@@ -22,26 +27,32 @@ export interface Currency {
     symbol: string
 }
 
-export const listCrypto = async (): Promise<Currency[]> => {
-    const { data } = await useAxios(
-        '/list/crypto',
-        {
-            method: 'GET',
-        },
-        axios
+export const listCryptos = async (): Promise<IConvertorCurrency[]> => {
+    const list = httpsCallable<unknown, { data: IConvertorCurrency[] }>(
+        functions,
+        'listCurrencies'
     )
 
-    return data.value.data
+    const resp = await list({ type: 'crypto' })
+    return resp.data.data
 }
 
-export const listFiat = async (): Promise<Currency[]> => {
-    const { data } = await useAxios(
-        '/list/fiat',
-        {
-            method: 'GET',
-        },
-        axios
+export const listFiats = async (): Promise<IConvertorCurrency[]> => {
+    const list = httpsCallable<unknown, { data: IConvertorCurrency[] }>(
+        functions,
+        'listCurrencies'
     )
 
-    return data.value.data
+    const resp = await list({ type: 'fiat' })
+    return resp.data.data
+}
+
+export const convertCurrency = async (req: any): Promise<any> => {
+    const convert = httpsCallable<unknown, { data: any }>(
+        functions,
+        'convertCurrency'
+    )
+
+    const resp = await convert(req)
+    return resp.data.data[req.from.currency.id].quote[req.to.currency.id].price
 }
