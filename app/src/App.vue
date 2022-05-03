@@ -1,8 +1,8 @@
 <template>
-    <div class="m-3">
+    <div class="h-screen py-3 px-5">
         <Navbar />
         <router-view />
-        <Footer class="mt-8" />
+        <Footer class="mt-5" />
     </div>
 </template>
 

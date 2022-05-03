@@ -1,12 +1,11 @@
-import { inject } from 'vue'
 import { useAxios } from '@vueuse/integrations/useAxios'
-import { Functions, httpsCallable } from 'firebase/functions'
+import { httpsCallable } from 'firebase/functions'
 import { IConvertorCurrency } from 'shared/convertor.model'
 import { functions } from '@/plugins/firebase'
 
 import axios from '.'
 
-export const convert = async (req: any): Promise<number> => {
+export const convertor = async (req: any): Promise<number> => {
     const { data } = await useAxios(
         '/convert',
         {
@@ -54,5 +53,21 @@ export const convertCurrency = async (req: any): Promise<any> => {
     )
 
     const resp = await convert(req)
-    return resp.data.data[req.from.currency.id].quote[req.to.currency.id].price
+
+    // TODO: this should be handled in cloud functions
+    if (process.env.NODE_ENV === 'development') {
+        return {
+            price: resp.data.data[req.from.currency.id].quote[
+                req.to.currency.id
+            ].price,
+            updatedAt:
+                resp.data.data[req.from.currency.id].quote[req.to.currency.id]
+                    .last_updated,
+        }
+    } else {
+        return {
+            price: resp.data.data.quote[req.to.currency.id].price,
+            updatedAt: resp.data.data.quote[req.to.currency.id].last_updated,
+        }
+    }
 }

@@ -6,10 +6,11 @@
         <div class="p-inputgroup p-inputtext-lg">
             <InputNumber
                 :maxFractionDigits="6"
+                :minFractionDigits="2"
                 :model-value="props.amount"
                 class="w-7"
                 :class="disable ? 'pointer-events-none' : ''"
-                mode="decimal"
+                :prefix="currency ? currency.sign : ''"
                 placeholder="0"
                 @input="$emit('update:amount', $event.value)"
             />
@@ -47,5 +48,6 @@ const props = defineProps<{
     currency: IConvertorCurrency
     currencyOptions: IConvertorCurrency[]
     disable?: boolean
+    inputMode?: string
 }>()
 </script>
