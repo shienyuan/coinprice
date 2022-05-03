@@ -1,0 +1,18 @@
+{
+  "hosting": {
+    "public": "app/dist",
+    "predeploy": [
+      "yarn --cwd app build"
+    ],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "functions": {
+    "predeploy": [
+      "yarn --cwd functions build"
+    ]
+  }
+}
