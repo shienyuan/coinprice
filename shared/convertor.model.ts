@@ -1,10 +1,11 @@
 export interface IConvertorInput {
-    currency: IConvertorCurrency
-    amount: number
+  currency: IConvertorCurrency;
+  amount: number;
 }
 
 export interface IConvertorCurrency {
-    id: number
-    name: string
-    symbol: string
+  id: number;
+  name: string;
+  symbol: string;
+  sign: string;
 }
