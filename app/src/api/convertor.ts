@@ -15,7 +15,6 @@ export const convertor = async (req: any): Promise<number> => {
         axios
     )
 
-    console.log(data.value.data)
     return data.value.data[req.from.id].quote[req.to.id].price as number
 }
 
@@ -26,24 +25,15 @@ export interface Currency {
     symbol: string
 }
 
-export const listCryptos = async (): Promise<IConvertorCurrency[]> => {
-    const list = httpsCallable<unknown, { data: IConvertorCurrency[] }>(
-        functions,
-        'listCurrencies'
-    )
-
-    const resp = await list({ type: 'crypto' })
-    return resp.data.data
+export const getCryptos = async (): Promise<IConvertorCurrency[]> => {
+    const req = httpsCallable(functions, 'getCryptos')
+    const resp = await req()
+    return resp.data as IConvertorCurrency[]
 }
-
-export const listFiats = async (): Promise<IConvertorCurrency[]> => {
-    const list = httpsCallable<unknown, { data: IConvertorCurrency[] }>(
-        functions,
-        'listCurrencies'
-    )
-
-    const resp = await list({ type: 'fiat' })
-    return resp.data.data
+export const getFiats = async (): Promise<IConvertorCurrency[]> => {
+    const req = httpsCallable<void, IConvertorCurrency[]>(functions, 'getFiats')
+    const resp = await req()
+    return resp.data
 }
 
 export const convertCurrency = async (req: any): Promise<any> => {
@@ -51,7 +41,6 @@ export const convertCurrency = async (req: any): Promise<any> => {
         functions,
         'convertCurrency'
     )
-
     const resp = await convert(req)
 
     // TODO: this should be handled in cloud functions
