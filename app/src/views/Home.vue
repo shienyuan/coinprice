@@ -11,7 +11,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 
-import { listCryptos, listFiats } from '@/api/convertor'
+import { getCryptos, getFiats } from '@/api/convertor'
 import { IConvertorCurrency } from 'shared/convertor.model'
 
 import Convertor from '@/components/convertor/index.vue'
@@ -21,7 +21,7 @@ const cryptosOptions = ref<IConvertorCurrency[]>([])
 const fiatsOptions = ref<IConvertorCurrency[]>([])
 
 const loadCurrencies = async () => {
-    const [cryptos, fiats] = await Promise.all([listCryptos(), listFiats()])
+    const [cryptos, fiats] = await Promise.all([getCryptos(), getFiats()])
     cryptosOptions.value = cryptos
     fiatsOptions.value = fiats
 }
