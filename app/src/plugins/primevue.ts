@@ -12,6 +12,5 @@ export default {
         app.component('Button', Button)
         app.component('Card', Card)
         app.component('InputText', InputText)
-        app.component('InputNumber', InputNumber)
     },
 }

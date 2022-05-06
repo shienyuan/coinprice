@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from '@/plugins/firebase'
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -6,6 +8,20 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Home',
         component: () =>
             import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
+    },
+    {
+        path: '/admin',
+        name: 'Admin',
+        beforeEnter: async (to, from, next) => {
+            await new Promise<void>(() => {
+                onAuthStateChanged(auth, (u) => {
+                    if (u !== null) next()
+                    else next('/login')
+                })
+            })
+        },
+        component: () =>
+            import(/* webpackChunkName: "admin" */ '@/views/Admin.vue'),
     },
 ]
 
