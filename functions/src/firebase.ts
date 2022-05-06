@@ -3,9 +3,12 @@ import * as functions from 'firebase-functions'
 
 admin.initializeApp()
 
-if (process.env.ENV === 'development') {
-    process.env.FIRESTORE_EMULATOR_HOST = 'localhost:5000'
-}
+const dev = process.env.ENV === 'development'
 
-export const db = admin.firestore()
+export const fs = admin.firestore()
 export const fn = functions.https
+export const db = {
+    statsCol: fs.collection(`stats${dev ? '_dev' : ''}`),
+    fiatsCol: fs.collection(`fiats${dev ? '_dev' : ''}`),
+    cryptosCol: fs.collection(`cryptos${dev ? '_dev' : ''}`),
+}

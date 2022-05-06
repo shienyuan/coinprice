@@ -1,29 +1,48 @@
 <template>
-    <main class="mt-8">
-        <Convertor
-            :crypto-options="cryptosOptions"
-            :fiats-options="fiatsOptions"
-            :initializing="initializing"
+    <main class="flex flex-column justify-content-center align-items-center">
+        <div id="convertor">
+            <Convertor
+                v-if="cryptos.length > 0 && fiats.length > 0"
+                :cryptos="cryptos"
+                :fiats="fiats"
+                :initializing="loading"
+            />
+            <Skeleton
+                v-else
+                height="100%"
+                style="transition: all 0.5s ease-out"
+            >
+            </Skeleton>
+        </div>
+
+        <ProgressSpinner
+            v-if="loading"
+            class="absolute"
+            strokeWidth="3"
+            style="width: 80px; height: 80px"
         />
     </main>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
-
 import { getCryptos, getFiats } from '@/api/convertor'
-import { IConvertorCurrency } from 'shared/convertor.model'
-
-import Convertor from '@/components/convertor/index.vue'
-
-const initializing = ref(true)
-const cryptosOptions = ref<IConvertorCurrency[]>([])
-const fiatsOptions = ref<IConvertorCurrency[]>([])
+import { Fiat, Crypto } from 'shared/types'
+// primevue
+import ProgressSpinner from 'primevue/progressspinner/ProgressSpinner.vue'
+import Skeleton from 'primevue/skeleton/Skeleton.vue'
+// components
+import Convertor from '@/components/convertor/Convertor.vue'
+// data
+const loading = ref(true)
+const cryptos = ref<Crypto[]>([])
+const fiats = ref<Fiat[]>([])
 
 const loadCurrencies = async () => {
-    const [cryptos, fiats] = await Promise.all([getCryptos(), getFiats()])
-    cryptosOptions.value = cryptos
-    fiatsOptions.value = fiats
+    ;[cryptos.value, fiats.value] = await Promise.all([
+        getCryptos(),
+        getFiats(),
+    ])
 }
 
 onMounted(async () => {
@@ -32,7 +51,23 @@ onMounted(async () => {
     } catch (e) {
         console.error(e)
     } finally {
-        initializing.value = false
+        loading.value = false
     }
 })
 </script>
+
+<style scoped>
+#convertor {
+    width: 420px;
+    height: 390px;
+}
+v-enter-active,
+.v-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+    opacity: 0;
+}
+</style>
