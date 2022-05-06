@@ -1,22 +1,6 @@
-import { useAxios } from '@vueuse/integrations/useAxios'
 import { httpsCallable } from 'firebase/functions'
-import { IConvertorCurrency } from 'shared/convertor.model'
 import { functions } from '@/plugins/firebase'
-
-import axios from '.'
-
-export const convertor = async (req: any): Promise<number> => {
-    const { data } = await useAxios(
-        '/convert',
-        {
-            method: 'POST',
-            data: req,
-        },
-        axios
-    )
-
-    return data.value.data[req.from.id].quote[req.to.id].price as number
-}
+import { Fiat, Crypto, ConvertRequest, ConvertResponse } from 'shared/types'
 
 export interface Currency {
     id: number
@@ -25,38 +9,24 @@ export interface Currency {
     symbol: string
 }
 
-export const getCryptos = async (): Promise<IConvertorCurrency[]> => {
-    const req = httpsCallable(functions, 'getCryptos')
+export const getCryptos = async (): Promise<Crypto[]> => {
+    const req = httpsCallable<void, Crypto[]>(functions, 'getCryptos')
     const resp = await req()
-    return resp.data as IConvertorCurrency[]
+    return resp.data
 }
-export const getFiats = async (): Promise<IConvertorCurrency[]> => {
-    const req = httpsCallable<void, IConvertorCurrency[]>(functions, 'getFiats')
+export const getFiats = async (): Promise<Fiat[]> => {
+    const req = httpsCallable<void, Fiat[]>(functions, 'getFiats')
     const resp = await req()
     return resp.data
 }
 
-export const convertCurrency = async (req: any): Promise<any> => {
-    const convert = httpsCallable<unknown, { data: any }>(
+export const convert = async (
+    req: ConvertRequest
+): Promise<ConvertResponse> => {
+    const convert = httpsCallable<ConvertRequest, ConvertResponse>(
         functions,
-        'convertCurrency'
+        'convert'
     )
     const resp = await convert(req)
-
-    // TODO: this should be handled in cloud functions
-    if (process.env.NODE_ENV === 'development') {
-        return {
-            price: resp.data.data[req.from.currency.id].quote[
-                req.to.currency.id
-            ].price,
-            updatedAt:
-                resp.data.data[req.from.currency.id].quote[req.to.currency.id]
-                    .last_updated,
-        }
-    } else {
-        return {
-            price: resp.data.data.quote[req.to.currency.id].price,
-            updatedAt: resp.data.data.quote[req.to.currency.id].last_updated,
-        }
-    }
+    return resp.data
 }

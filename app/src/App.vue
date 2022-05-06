@@ -1,6 +1,6 @@
 <template>
     <div class="h-screen py-3 px-5">
-        <Navbar />
+        <Navbar class="mb-8" />
         <router-view />
         <Footer class="mt-5" />
     </div>

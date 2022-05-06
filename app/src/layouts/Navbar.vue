@@ -1,6 +1,9 @@
 <template>
     <nav class="flex justify-content-between align-items-center">
-        <p class="m-0 font-bold text-xl">
+        <p
+            class="m-0 font-bold text-xl cursor-pointer"
+            @click="$router.replace('/')"
+        >
             CoinPrice
             <span class="font-light text-sm">v0.1.0</span>
         </p>
