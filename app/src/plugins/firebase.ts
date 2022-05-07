@@ -4,10 +4,8 @@ import { getFunctions, connectFunctionsEmulator } from 'firebase/functions'
 import {
     getAuth,
     signInWithEmailAndPassword,
-    signInAnonymously,
-    onAuthStateChanged,
     signOut,
-    User,
+    UserCredential,
 } from 'firebase/auth'
 import { App } from 'vue'
 
@@ -25,11 +23,11 @@ export const fb = initializeApp(configs)
 export const analytics = getAnalytics(fb)
 export const functions = getFunctions(fb)
 export const auth = getAuth(fb)
-export const authSignInEmail = (email: string, password: string) =>
-    signInWithEmailAndPassword(auth, email, password)
-export const authSignOut = () => signOut(auth)
-export const user: User | null = null
-export const checkAuth = () => user !== null
+export const authSignInEmail = (
+    email: string,
+    password: string
+): Promise<UserCredential> => signInWithEmailAndPassword(auth, email, password)
+export const authSignOut = (): Promise<void> => signOut(auth)
 
 if (process.env.NODE_ENV === 'development')
     connectFunctionsEmulator(functions, 'localhost', 5001)
