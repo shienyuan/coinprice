@@ -9,7 +9,7 @@ export interface ConvertRequest {
 }
 
 export interface ConvertInput {
-  amount: number;
+  amount: number | null;
   type: CurrencyType;
   currency: Currency;
 }
