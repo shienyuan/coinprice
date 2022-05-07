@@ -9,7 +9,7 @@
             />
             <Skeleton
                 v-else
-                height="100%"
+                height="400px"
                 style="transition: all 0.5s ease-out"
             >
             </Skeleton>
@@ -59,15 +59,5 @@ onMounted(async () => {
 <style scoped>
 #convertor {
     width: 420px;
-    height: 390px;
-}
-v-enter-active,
-.v-leave-active {
-    transition: opacity 0.5s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-    opacity: 0;
 }
 </style>
