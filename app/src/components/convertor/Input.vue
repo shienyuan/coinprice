@@ -1,51 +1,57 @@
 <template>
-    <div class="surface-ground border-round p-3">
-        <p class="text-sm text-gray-500 m-0"><slot></slot></p>
+    <aside>
+        <div class="surface-ground border-round p-3">
+            <p class="text-sm text-gray-500 m-0">
+                <slot></slot>
+            </p>
 
-        <div class="flex justify-content-between align-items-center">
-            <div class="w-8">
-                <InputNumber
-                    class="w-full p-inputtext-lg"
-                    :input-class="
-                        (disable ? 'pointer-events-none' : '') +
-                        ' p-0 border-none py-2'
-                    "
-                    :placeholder="disable ? 0 : 'enter amount'"
-                    :maxFractionDigits="isFiat ? 2 : 6"
-                    :minFractionDigits="isFiat ? 2 : 0"
-                    :model-value="props.amount"
-                    @input="handleInput"
-                />
+            <div class="flex justify-content-between align-items-center">
+                <div class="w-8">
+                    <InputNumber
+                        :input-class="
+                            (disable ? 'pointer-events-none' : '') +
+                            ' p-0 border-none py-2'
+                        "
+                        :maxFractionDigits="isFiat ? 2 : 6"
+                        :minFractionDigits="isFiat ? 2 : 0"
+                        :model-value="props.amount"
+                        :placeholder="disable ? 0 : 'enter amount'"
+                        class="w-full p-inputtext-lg"
+                        @input="handleInput"
+                    />
+                </div>
+
+                <Button
+                    class="p-button-text text-white text-right inline"
+                    @click="handleToggleDialog"
+                >
+                    <span>{{ currency.symbol }}</span>
+                </Button>
             </div>
 
-            <Button
-                @click="handleShow"
-                class="p-button-text text-white text-right inline"
-            >
-                <span>{{ currency.symbol }}</span>
-            </Button>
+            <slot name="footer" />
         </div>
 
         <Dialog
-            :header="`Select a ${isFiat ? 'Fiat' : 'Token'}`"
             v-model:visible="show"
-            style="width: 400px"
-            modal
-            dismissable-mask
-            close-on-escape
             :draggable="false"
-            keep-in-viewport
+            :header="`Select a ${isFiat ? 'Fiat' : 'Token'}`"
+            close-on-escape
             content-class="p-0"
+            dismissable-mask
+            keep-in-viewport
+            modal
+            style="width: 400px"
         >
             <Listbox
                 :filter="true"
                 :filterFields="['name', 'symbol']"
-                :options="currencies"
                 :model-value="props.currency"
+                :options="currencies"
                 :virtualScrollerOptions="{ itemSize: 10 }"
-                listStyle="height:600px"
                 class="border-0"
-                @change="$emit('update:modelValue', $event.value)"
+                listStyle="height:600px"
+                @change="handleSelect"
             >
                 <template #option="data">
                     <p class="m-0 py-2">
@@ -57,7 +63,7 @@
                 </template>
             </Listbox>
         </Dialog>
-    </div>
+    </aside>
 </template>
 
 <script lang="ts" setup>
@@ -68,6 +74,7 @@ import InputNumber from 'primevue/inputnumber/InputNumber.vue'
 import Dialog from 'primevue/dialog/Dialog.vue'
 import Listbox from 'primevue/listbox/Listbox.vue'
 import { InputNumberInputEvent } from 'primevue/inputnumber'
+import { ListboxChangeEvent } from 'primevue/listbox'
 
 const props = defineProps<{
     currencyType: CurrencyType
@@ -84,6 +91,7 @@ const emit = defineEmits<{
 
 const show = ref(false)
 const isFiat = computed(() => props.currencyType === CurrencyType.fiat)
+const handleToggleDialog = () => (show.value = !show.value)
 
 const handleInput = (event: InputNumberInputEvent) => {
     if (props.disable) {
@@ -93,7 +101,10 @@ const handleInput = (event: InputNumberInputEvent) => {
     }
 }
 
-const handleShow = () => (show.value = true)
+const handleSelect = (event: ListboxChangeEvent) => {
+    emit('update:currency', event.value)
+    handleToggleDialog()
+}
 </script>
 
 <style>

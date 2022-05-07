@@ -17,8 +17,19 @@
             v-model:amount="to.amount"
             v-model:currency="to.currency"
             disable
-            >To</Input
-        >
+            >To
+            <template #footer>
+                <hr
+                    class="border-bottom-none border-left-none border-right-none border-gray-300"
+                />
+                <span class="text-sm text-gray-500"
+                    >converted at
+                    {{
+                        lastUpdated ? dayjs(lastUpdated).format('lll') : 'none'
+                    }}</span
+                >
+            </template>
+        </Input>
 
         <Button class="w-full" label="Convert" @click="handleConvert" />
     </div>
@@ -28,6 +39,9 @@
 import { defineProps, ref } from 'vue'
 import { Crypto, CurrencyType, Fiat, ConvertInput } from 'shared/types'
 import { convert } from '@/api/convertor'
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+dayjs.extend(localizedFormat)
 
 // components
 import Input from './Input.vue'
@@ -41,17 +55,19 @@ const props = defineProps<{
 
 const loading = ref(false)
 
-let from = ref<ConvertInput>({
+const from = ref<ConvertInput>({
     amount: null,
     type: CurrencyType.crypto,
     currency: props.cryptos[0],
 })
 
-let to = ref<ConvertInput>({
+const to = ref<ConvertInput>({
     amount: null,
     type: CurrencyType.fiat,
     currency: props.fiats[0],
 })
+
+const lastUpdated = ref<Date | null>(null)
 
 const getCurrencies = (type: CurrencyType) =>
     type === CurrencyType.fiat ? props.fiats : props.cryptos
@@ -63,8 +79,8 @@ const handleConvert = async () => {
             from: from.value,
             to: to.value,
         })
-        console.log(resp)
         to.value.amount = resp.amount
+        lastUpdated.value = resp.lastUpdated
     } catch (e) {
         console.error(e)
     } finally {
