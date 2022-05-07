@@ -5,7 +5,7 @@
             @click="$router.replace('/')"
         >
             CoinPrice
-            <span class="font-light text-sm">v0.1.0</span>
+            <span class="font-light text-sm">v{{ version }}</span>
         </p>
         <div class="flex align-items-center">
             <Button
@@ -23,6 +23,7 @@
 </template>
 
 <script setup lang="ts">
+import { version } from '../../package.json'
 const navigateToSocial = (url: string) => {
     window.open(url)
 }
