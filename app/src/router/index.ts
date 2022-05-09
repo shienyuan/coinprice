@@ -10,6 +10,12 @@ const routes: Array<RouteRecordRaw> = [
             import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
     },
     {
+        path: '/login',
+        name: 'Login',
+        component: () =>
+            import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
+    },
+    {
         path: '/admin',
         name: 'Admin',
         beforeEnter: async (to, from, next) => {

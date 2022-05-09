@@ -1,5 +1,5 @@
 <template>
-    <div class="surface-card p-4 border-round">
+    <div class="surface-card px-3 py-4 border-round">
         <Input
             :currencies="getCurrencies(from.type)"
             :currency-type="from.type"
@@ -31,12 +31,18 @@
             </template>
         </Input>
 
-        <Button class="w-full" label="Convert" @click="handleConvert" />
+        <Button
+            class="w-full"
+            label="Convert"
+            :class="ready ? '' : 'p-button-secondary'"
+            @click="handleConvert"
+            :disabled="!ready"
+        />
     </div>
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref } from 'vue'
+import { computed, defineProps, ref, watch } from 'vue'
 import { Crypto, CurrencyType, Fiat, ConvertInput } from 'shared/types'
 import { convert } from '@/api/convertor'
 import dayjs from 'dayjs'
@@ -48,23 +54,20 @@ import Input from './Input.vue'
 import Switcher from './Switcher.vue'
 
 const props = defineProps<{
-    initializing: boolean
     cryptos: Crypto[]
     fiats: Fiat[]
 }>()
 
 const loading = ref(false)
+const ready = computed(() => props.cryptos.length > 0 && props.fiats.length > 0)
+const from = ref<ConvertInput>({ type: CurrencyType.crypto })
+const to = ref<ConvertInput>({ type: CurrencyType.fiat })
 
-const from = ref<ConvertInput>({
-    amount: null,
-    type: CurrencyType.crypto,
-    currency: props.cryptos[0],
-})
-
-const to = ref<ConvertInput>({
-    amount: null,
-    type: CurrencyType.fiat,
-    currency: props.fiats[0],
+watch(ready, (val) => {
+    if (val) {
+        from.value.currency = props.cryptos[0]
+        to.value.currency = props.fiats[0]
+    }
 })
 
 const lastUpdated = ref<Date | null>(null)
