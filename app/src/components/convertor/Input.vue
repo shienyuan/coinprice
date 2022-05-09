@@ -19,6 +19,7 @@
                         @input="
                             $emit('update:amount', Number($event.target.value))
                         "
+                        @keyup.enter="$emit('enter')"
                     />
                 </div>
 
@@ -86,6 +87,7 @@ const props = defineProps<{
 const emit = defineEmits<{
     (e: 'update:currency', value: string | number | undefined): void
     (e: 'update:amount', value: string | null): void
+    (e: 'enter', value: null): void
 }>()
 
 const show = ref(false)
@@ -99,5 +101,5 @@ const handleSelect = (event: ListboxChangeEvent) => {
 }
 
 const formatAmount = (val: number) =>
-    isFiat.value ? val.toFixed(2) : val % 1 != 0 ? val.toFixed(6) : val
+    isFiat.value ? val?.toFixed(2) : val % 1 != 0 ? val.toFixed(6) : val
 </script>

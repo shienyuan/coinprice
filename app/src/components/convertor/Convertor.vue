@@ -5,6 +5,7 @@
             :currency-type="from.type"
             v-model:amount="from.amount"
             v-model:currency="from.currency"
+            @enter="handleConvert"
             >From</Input
         >
 
