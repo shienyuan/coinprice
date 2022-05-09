@@ -15,3 +15,24 @@ a {
   color: inherit; /* blue colors for links too */
   text-decoration: inherit; /* no underline */
 }
+
+.p-inputtext:enabled:focus {
+  box-shadow: none !important;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.p-card-body {
+  .p-card-content {
+    padding: 0 !important;
+  }
+}

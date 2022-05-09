@@ -1,26 +1,20 @@
 <template>
     <main class="flex flex-column justify-content-center align-items-center">
+        <ProgressSpinner
+            v-if="loading"
+            strokeWidth="3"
+            class="absolute z-5"
+            style="width: 5rem; height: 5rem"
+        />
+
         <div id="convertor">
+            <Skeleton class="mb-2" width="100%" height="100%"></Skeleton>
             <Convertor
-                v-if="cryptos.length > 0 && fiats.length > 0"
                 :cryptos="cryptos"
                 :fiats="fiats"
                 :initializing="loading"
             />
-            <Skeleton
-                v-else
-                height="400px"
-                style="transition: all 0.5s ease-out"
-            >
-            </Skeleton>
         </div>
-
-        <ProgressSpinner
-            v-if="loading"
-            class="absolute"
-            strokeWidth="3"
-            style="width: 80px; height: 80px"
-        />
     </main>
 </template>
 
@@ -30,9 +24,9 @@ import { getCryptos, getFiats } from '@/api/convertor'
 import { Fiat, Crypto } from 'shared/types'
 // primevue
 import ProgressSpinner from 'primevue/progressspinner/ProgressSpinner.vue'
-import Skeleton from 'primevue/skeleton/Skeleton.vue'
 // components
 import Convertor from '@/components/convertor/Convertor.vue'
+import Skeleton from 'primevue/skeleton/Skeleton.vue'
 // data
 const loading = ref(true)
 const cryptos = ref<Crypto[]>([])
@@ -58,6 +52,7 @@ onMounted(async () => {
 
 <style scoped>
 #convertor {
-    width: 420px;
+    width: 100%;
+    max-width: 420px;
 }
 </style>

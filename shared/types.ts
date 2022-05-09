@@ -9,9 +9,9 @@ export interface ConvertRequest {
 }
 
 export interface ConvertInput {
-  amount: number | null;
   type: CurrencyType;
-  currency: Currency;
+  amount?: number;
+  currency?: Currency;
 }
 
 export interface ConvertResponse {
