@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getAnalytics } from 'firebase/analytics'
+import { getAnalytics, logEvent } from 'firebase/analytics'
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions'
 import {
     getAuth,
@@ -8,6 +8,7 @@ import {
     UserCredential,
 } from 'firebase/auth'
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
+import { AnalyticsCallOptions } from '@firebase/analytics'
 
 const configs = {
     apiKey: '***REMOVED***',
@@ -21,6 +22,13 @@ const configs = {
 
 export const fb = initializeApp(configs)
 export const analytics = getAnalytics(fb)
+export const analyticsLogEvent = (
+    eventName: string,
+    eventParams?: {
+        [key: string]: any
+    },
+    options?: AnalyticsCallOptions
+): void => logEvent(analytics, eventName, eventParams, options)
 export const functions = getFunctions(fb)
 export const auth = getAuth(fb)
 export const authSignInEmail = (
