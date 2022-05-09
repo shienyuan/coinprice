@@ -53,6 +53,6 @@ onMounted(async () => {
 <style scoped>
 #convertor {
     width: 100%;
-    max-width: 420px;
+    max-width: 450px;
 }
 </style>
