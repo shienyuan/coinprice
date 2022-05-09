@@ -1,13 +1,20 @@
 import * as dayjs from 'dayjs'
 
-import { fn, db, fs } from './firebase'
+import { fn, db, fs, HttpError } from './firebase'
 import { cmcRequest } from './cmcapi'
 import { Crypto, CryptoResponse, Fiat, FiatResponse } from './types/cmcapi'
 import { ConvertRequest, ConvertResponse } from 'shared/types'
 
 const fetchDataInterval = 30 // day
 
-export const getFiats = fn.onCall(async (): Promise<Fiat[]> => {
+export const getFiats = fn.onCall(async (_, context): Promise<Fiat[]> => {
+    if (context.app == undefined) {
+        throw new HttpError(
+            'failed-precondition',
+            'The function must be called from an App Check verified app.'
+        )
+    }
+
     const now = dayjs()
     const stats = await db.statsCol.doc('fiats').get()
     const expired = dayjs(stats.data()?.last_updated_at.toDate()).isAfter(
@@ -22,7 +29,14 @@ export const getFiats = fn.onCall(async (): Promise<Fiat[]> => {
     return snaps.docs.map((doc) => doc.data() as Fiat)
 })
 
-export const getCryptos = fn.onCall(async (): Promise<Crypto[]> => {
+export const getCryptos = fn.onCall(async (_, context): Promise<Crypto[]> => {
+    if (context.app == undefined) {
+        throw new HttpError(
+            'failed-precondition',
+            'The function must be called from an App Check verified app.'
+        )
+    }
+
     const now = dayjs()
     const stats = await db.statsCol.doc('cryptos').get()
     const expired = dayjs(stats.data()?.last_updated_at.toDate()).isAfter(
@@ -38,7 +52,14 @@ export const getCryptos = fn.onCall(async (): Promise<Crypto[]> => {
 })
 
 export const convert = fn.onCall(
-    async (req: ConvertRequest): Promise<ConvertResponse> => {
+    async (req: ConvertRequest, context): Promise<ConvertResponse> => {
+        if (context.app == undefined) {
+            throw new HttpError(
+                'failed-precondition',
+                'The function must be called from an App Check verified app.'
+            )
+        }
+
         const converted = await cmcRequest.get('/v2/tools/price-conversion', {
             params: {
                 amount: req.from.amount,
@@ -47,7 +68,7 @@ export const convert = fn.onCall(
             },
         })
 
-        let data = converted.data.data.quote[req.to.currency.id]
+        const data = converted.data.data.quote[req.to.currency.id]
 
         return {
             amount: data.price,

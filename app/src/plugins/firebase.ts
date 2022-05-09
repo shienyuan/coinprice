@@ -7,7 +7,7 @@ import {
     signOut,
     UserCredential,
 } from 'firebase/auth'
-import { App } from 'vue'
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 
 const configs = {
     apiKey: '***REMOVED***',
@@ -29,14 +29,18 @@ export const authSignInEmail = (
 ): Promise<UserCredential> => signInWithEmailAndPassword(auth, email, password)
 export const authSignOut = (): Promise<void> => signOut(auth)
 
+export const appCheck = initializeAppCheck(fb, {
+    provider: new ReCaptchaV3Provider(
+        '***REMOVED***'
+    ),
+    isTokenAutoRefreshEnabled: true,
+})
+
 if (process.env.NODE_ENV === 'development')
     connectFunctionsEmulator(functions, 'localhost', 5001)
 
 export default {
-    install: (app: App): void => {
-        app.provide('$fb', fb)
-        app.provide('$fb_analytics', analytics)
-        app.provide('$fb_functions', functions)
-        app.provide('$fb_auth', auth)
+    install: (): void => {
+        return
     },
 }
