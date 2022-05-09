@@ -1,12 +1,13 @@
 {
   "name": "coinprice-app",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint --fix"
+    "lint": "vue-cli-service lint --fix",
+    "deploy": "firebase deploy --only hosting"
   },
   "dependencies": {
     "axios": "^0.26.1",
