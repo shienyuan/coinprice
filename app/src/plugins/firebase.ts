@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getAnalytics } from 'firebase/analytics'
+import { getAnalytics, logEvent } from 'firebase/analytics'
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions'
 import {
     getAuth,
@@ -7,7 +7,8 @@ import {
     signOut,
     UserCredential,
 } from 'firebase/auth'
-import { App } from 'vue'
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
+import { AnalyticsCallOptions } from '@firebase/analytics'
 
 const configs = {
     apiKey: '***REMOVED***',
@@ -21,6 +22,13 @@ const configs = {
 
 export const fb = initializeApp(configs)
 export const analytics = getAnalytics(fb)
+export const analyticsLogEvent = (
+    eventName: string,
+    eventParams?: {
+        [key: string]: any
+    },
+    options?: AnalyticsCallOptions
+): void => logEvent(analytics, eventName, eventParams, options)
 export const functions = getFunctions(fb)
 export const auth = getAuth(fb)
 export const authSignInEmail = (
@@ -29,14 +37,18 @@ export const authSignInEmail = (
 ): Promise<UserCredential> => signInWithEmailAndPassword(auth, email, password)
 export const authSignOut = (): Promise<void> => signOut(auth)
 
+export const appCheck = initializeAppCheck(fb, {
+    provider: new ReCaptchaV3Provider(
+        '***REMOVED***'
+    ),
+    isTokenAutoRefreshEnabled: true,
+})
+
 if (process.env.NODE_ENV === 'development')
     connectFunctionsEmulator(functions, 'localhost', 5001)
 
 export default {
-    install: (app: App): void => {
-        app.provide('$fb', fb)
-        app.provide('$fb_analytics', analytics)
-        app.provide('$fb_functions', functions)
-        app.provide('$fb_auth', auth)
+    install: (): void => {
+        return
     },
 }
