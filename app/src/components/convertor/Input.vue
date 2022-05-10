@@ -7,7 +7,7 @@
 
             <div class="flex justify-content-between align-items-center">
                 <div class="w-8">
-                    <p v-if="disable" class="text-lg m-0 py-2">
+                    <p v-if="disable" class="text-xl m-0 py-2">
                         {{ formatAmount(amount) }}
                     </p>
                     <InputText
@@ -27,7 +27,7 @@
                     class="p-button-text text-white text-right inline"
                     @click="handleToggleDialog"
                 >
-                    <span>{{ currency?.symbol }}</span>
+                    <span>{{ currency?.symbol || 'Select' }}</span>
                 </Button>
             </div>
 
@@ -101,5 +101,5 @@ const handleSelect = (event: ListboxChangeEvent) => {
 }
 
 const formatAmount = (val: number) =>
-    isFiat.value ? val?.toFixed(2) : val % 1 != 0 ? val.toFixed(6) : val
+    isFiat.value ? val?.toFixed(2) : val % 1 != 0 ? val?.toFixed(6) : val
 </script>

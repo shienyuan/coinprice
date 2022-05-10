@@ -1,58 +1,101 @@
 <template>
-    <div class="surface-card px-3 py-4 border-round">
-        <Input
-            :currencies="getCurrencies(from.type)"
-            :currency-type="from.type"
-            v-model:amount="from.amount"
-            v-model:currency="from.currency"
-            @enter="handleConvert"
-            >From</Input
-        >
+    <div>
+        <Card>
+            <template #title>
+                <div class="flex align-items-center justify-content-between">
+                    <div class="w-8">
+                        <h1 class="text-2xl m-0 mb-2">Convert</h1>
+                        <p class="text-base m-0 font-normal p-text-secondary">
+                            {{ from.currency?.name || 'None' }}
+                            to
+                            {{ to.currency?.name || 'None' }}
+                        </p>
+                    </div>
 
-        <Switcher :loading="loading" @swap="handleSwap" />
-
-        <Input
-            class="mb-5"
-            :currencies="getCurrencies(to.type)"
-            :currency-type="to.type"
-            v-model:amount="to.amount"
-            v-model:currency="to.currency"
-            disable
-            >To
-            <template #footer>
-                <hr
-                    class="border-bottom-none border-left-none border-right-none border-gray-300"
-                />
-                <span class="text-sm text-gray-500"
-                    >converted at
-                    {{
-                        lastUpdated ? dayjs(lastUpdated).format('lll') : 'none'
-                    }}</span
-                >
+                    <SelectButton
+                        id="convertorMode"
+                        v-model="mode"
+                        :options="[
+                            ConvertorMode.cryptoToFiat,
+                            ConvertorMode.cryptoToCrypto,
+                        ]"
+                        @change="handleSetDefaults"
+                    >
+                        <template #option="data">
+                            {{
+                                data.option === ConvertorMode.cryptoToFiat
+                                    ? 'Fiat'
+                                    : 'Crypto'
+                            }}
+                        </template>
+                    </SelectButton>
+                </div>
             </template>
-        </Input>
 
-        <Button
-            class="w-full"
-            label="Convert"
-            :class="ready ? '' : 'p-button-secondary'"
-            @click="handleConvert"
-            :disabled="!ready"
-        />
+            <template #content>
+                <Input
+                    v-model:amount="from.amount"
+                    v-model:currency="from.currency"
+                    :currencies="getCurrencies(from.type)"
+                    :currency-type="from.type"
+                    @enter="handleConvert"
+                    >From</Input
+                >
+
+                <Switcher :loading="loading" @swap="handleSwap" />
+
+                <Input
+                    v-model:amount="to.amount"
+                    v-model:currency="to.currency"
+                    :currencies="getCurrencies(to.type)"
+                    :currency-type="to.type"
+                    disable
+                    >To
+                    <template #footer>
+                        <hr
+                            class="border-bottom-none border-left-none border-right-none border-gray-300"
+                        />
+                        <span class="text-sm text-gray-500"
+                            >converted at
+                            {{
+                                lastUpdated
+                                    ? dayjs(lastUpdated).format('lll')
+                                    : 'none'
+                            }}</span
+                        >
+                    </template>
+                </Input>
+            </template>
+
+            <template #footer>
+                <Button
+                    :class="ready ? '' : 'p-button-secondary'"
+                    :disabled="!ready"
+                    class="w-full"
+                    label="Convert"
+                    @click="handleConvert"
+                />
+            </template>
+        </Card>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, ref, watch } from 'vue'
-import { Crypto, CurrencyType, Fiat, ConvertInput } from 'shared/types'
+enum ConvertorMode {
+    cryptoToFiat = 0,
+    cryptoToCrypto = 1,
+}
+
+import { computed, defineProps, onMounted, ref, watch } from 'vue'
+import { ConvertInput, Crypto, CurrencyType, Fiat } from 'shared/types'
 import { convert } from '@/api/convertor'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
-dayjs.extend(localizedFormat)
-
-// components
 import Input from './Input.vue'
 import Switcher from './Switcher.vue'
+import SelectButton from 'primevue/selectbutton/SelectButton.vue'
+
+dayjs.extend(localizedFormat)
 
 const props = defineProps<{
     cryptos: Crypto[]
@@ -61,6 +104,7 @@ const props = defineProps<{
 
 const loading = ref(false)
 const ready = computed(() => props.cryptos.length > 0 && props.fiats.length > 0)
+const mode = ref<ConvertorMode>(ConvertorMode.cryptoToFiat)
 const from = ref<ConvertInput>({ type: CurrencyType.crypto })
 const to = ref<ConvertInput>({ type: CurrencyType.fiat })
 
@@ -97,4 +141,31 @@ const handleSwap = () => {
     from.value = to.value
     to.value = swapping
 }
+
+const handleSetDefaults = () => {
+    if (mode.value === ConvertorMode.cryptoToFiat) {
+        from.value.currency = props.cryptos[0]
+        from.value.amount = undefined
+        to.value.currency = props.fiats[0]
+        to.value.amount = 0
+    } else {
+        from.value.currency = props.cryptos[0]
+        from.value.amount = undefined
+        to.value.currency = props.cryptos[0]
+        to.value.type = CurrencyType.crypto
+        to.value.amount = 0
+    }
+}
+
+onMounted(() => {
+    handleSetDefaults()
+})
 </script>
+
+<style lang="scss">
+#convertorMode {
+    .p-button {
+        padding: 0.5rem;
+    }
+}
+</style>
