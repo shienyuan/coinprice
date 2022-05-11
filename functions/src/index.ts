@@ -25,7 +25,7 @@ export const getFiats = fn.onCall(async (_, context): Promise<Fiat[]> => {
         return await updateFiats(now.toDate())
     }
 
-    const snaps = await db.fiatsCol.get()
+    const snaps = await db.fiatsCol.limit(10).orderBy('rank').get()
     return snaps.docs.map((doc) => doc.data() as Fiat)
 })
 
@@ -47,7 +47,7 @@ export const getCryptos = fn.onCall(async (_, context): Promise<Crypto[]> => {
         return await updateCryptos(now.toDate())
     }
 
-    const snaps = await db.cryptosCol.get()
+    const snaps = await db.cryptosCol.limit(10).orderBy('rank').get()
     return snaps.docs.map((doc) => doc.data() as Crypto)
 })
 

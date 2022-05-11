@@ -33,38 +33,6 @@
 
             <slot name="footer" />
         </div>
-
-        <Dialog
-            v-model:visible="show"
-            :draggable="false"
-            :header="`Select a ${isFiat ? 'Fiat' : 'Token'}`"
-            close-on-escape
-            content-class="p-0"
-            dismissable-mask
-            keep-in-viewport
-            modal
-            style="width: 400px"
-        >
-            <Listbox
-                :filter="true"
-                :filterFields="['name', 'symbol']"
-                :model-value="props.currency"
-                :options="currencies"
-                :virtualScrollerOptions="{ itemSize: 10 }"
-                class="border-0"
-                listStyle="height:600px"
-                @change="handleSelect"
-            >
-                <template #option="data">
-                    <p class="m-0 py-2">
-                        {{ data.option?.sign }}{{ data.option?.symbol }}
-                        <span class="text-gray-300">
-                            {{ data.option.name }}
-                        </span>
-                    </p>
-                </template>
-            </Listbox>
-        </Dialog>
     </div>
 </template>
 

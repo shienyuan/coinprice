@@ -1,20 +1,17 @@
 <template>
     <main class="flex flex-column justify-content-center align-items-center">
-        <ProgressSpinner
-            v-if="loading"
-            strokeWidth="3"
-            class="absolute z-5"
-            style="width: 5rem; height: 5rem"
-        />
+        <Convertor id="convertor" />
 
-        <div id="convertor">
-            <Skeleton class="mb-2" width="100%" height="100%"></Skeleton>
-            <Convertor
-                :cryptos="cryptos"
-                :fiats="fiats"
-                :initializing="loading"
-            />
-        </div>
+        <!--        <ProgressSpinner-->
+        <!--            v-if="loading"-->
+        <!--            strokeWidth="3"-->
+        <!--            class="absolute z-5"-->
+        <!--            style="width: 5rem; height: 5rem"-->
+        <!--        />-->
+
+        <!--        <div id="convertor">-->
+        <!--            <Skeleton class="mb-2" width="100%" height="100%"></Skeleton>-->
+        <!--        </div>-->
     </main>
 </template>
 
@@ -30,13 +27,9 @@ import Skeleton from 'primevue/skeleton/Skeleton.vue'
 // data
 const loading = ref(true)
 const cryptos = ref<Crypto[]>([])
-const fiats = ref<Fiat[]>([])
 
 const loadCurrencies = async () => {
-    ;[cryptos.value, fiats.value] = await Promise.all([
-        getCryptos(),
-        getFiats(),
-    ])
+    // ;[cryptos.value] = await Promise.all([getCryptos()])
 }
 
 onMounted(async () => {
@@ -52,7 +45,6 @@ onMounted(async () => {
 
 <style scoped>
 #convertor {
-    width: 100%;
     max-width: 450px;
 }
 </style>
