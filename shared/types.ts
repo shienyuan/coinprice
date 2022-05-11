@@ -1,6 +1,11 @@
 export enum CurrencyType {
-  fiat = 0,
-  crypto = 1,
+  fiat = "fiat",
+  crypto = "crypto",
+}
+
+export enum ConvertorMode {
+  cryptoToFiat,
+  cryptoToCrypto,
 }
 
 export interface ConvertRequest {
@@ -23,6 +28,7 @@ export interface Currency {
   id: number;
   name: string;
   symbol: string;
+  icon: string;
 }
 
 export interface Fiat extends Currency {

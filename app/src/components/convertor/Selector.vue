@@ -1,57 +1,75 @@
 <template>
-    <aside class="flex align-items-center justify-content-end">
-        <Button @click="handleShow" class="p-button-text text-white">
-            <span>{{ modelValue.symbol }}</span>
+    <div>
+        <Button
+            class="border-none text-white text-right inline bg-transparent"
+            @click="handleToggleDialog"
+        >
+            <span class="mr-2" v-if="modelValue?.icon">{{
+                modelValue.icon
+            }}</span>
+            <span>{{ modelValue?.symbol || 'loading...' }}</span>
         </Button>
+
         <Dialog
-            :header="`Select a ${
-                currencyType === CurrencyType.fiat ? 'Fiat' : 'Token'
-            }`"
-            v-model:visible="show"
+            content-class="p-0"
             style="width: 400px"
-            modal
+            v-model:visible="show"
+            :draggable="false"
+            :header="`Select a ${
+                type === CurrencyType.crypto ? 'Coin' : 'Fiat'
+            }`"
             dismissable-mask
             close-on-escape
-            :draggable="false"
             keep-in-viewport
-            content-class="p-0"
+            modal
         >
+            <template #header>
+                <slot></slot>
+            </template>
             <Listbox
-                :filter="true"
-                :filterFields="['name', 'symbol']"
-                :options="currencies"
-                :model-value="props.modelValue"
-                :virtualScrollerOptions="{ itemSize: 5 }"
-                listStyle="height:500px"
                 class="border-0"
-                @change="$emit('update:modelValue', $event.value)"
+                :options="options"
+                :model-value="props.modelValue"
+                @change="handleSelect"
             >
                 <template #option="data">
-                    <span class="mr-1">{{ data.option?.sign }}</span>
-                    <span class="mr-1">{{ data.option.symbol }}</span>
-                    <span class="text-gray-300"> {{ data.option.name }}</span>
+                    <p class="m-0 py-2">
+                        <span class="mr-2" v-if="data.option.icon">{{
+                            data.option.icon
+                        }}</span>
+                        <span class="mr-1">{{ data.option?.symbol }}</span>
+                        <span class="text-gray-300">
+                            {{ data.option.name }}
+                        </span>
+                    </p>
                 </template>
             </Listbox>
         </Dialog>
-    </aside>
+    </div>
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref } from 'vue'
+import { defineEmits, defineProps, ref } from 'vue'
 import { Currency, CurrencyType } from 'shared/types'
-
+import { ListboxChangeEvent } from 'primevue/listbox'
 import Listbox from 'primevue/listbox/Listbox.vue'
 import Dialog from 'primevue/dialog/Dialog.vue'
 
 const props = defineProps<{
     modelValue: Currency
-    currencyType: CurrencyType
-    currencies: Currency[]
+    type: CurrencyType
+    options?: Currency[]
+}>()
+
+const emits = defineEmits<{
+    (e: 'update:modelValue', value: Currency): void
 }>()
 
 const show = ref(false)
 
-const handleShow = () => (show.value = true)
+const handleToggleDialog = () => (show.value = !show.value)
+const handleSelect = (event: ListboxChangeEvent) => {
+    emits('update:modelValue', event.value)
+    handleToggleDialog()
+}
 </script>
-
-<style scoped></style>
