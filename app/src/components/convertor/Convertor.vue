@@ -60,7 +60,12 @@
                     class="flex justify-content-between align-items-center surface-ground border-round p-3"
                 >
                     <p class="text-xl m-0 py-2">
-                        {{ to.amount || 0 }}
+                        <span v-if="to.amount">{{
+                            to.type === CurrencyType.crypto
+                                ? Number(to.amount).toFixed(6)
+                                : Number(to.amount).toFixed(2)
+                        }}</span>
+                        <span v-else>0</span>
                     </p>
                     <Selector
                         v-model="to.currency"
@@ -136,7 +141,7 @@ const setDefaultValues = () => {
         to.value.type = CurrencyType.fiat
     } else {
         from.value.currency = cryptos.value[0]
-        to.value.currency = cryptos.value[0]
+        to.value.currency = cryptos.value[1]
         from.value.type = CurrencyType.crypto
         to.value.type = CurrencyType.crypto
     }

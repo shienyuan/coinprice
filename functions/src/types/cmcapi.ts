@@ -1,3 +1,5 @@
+import { Crypto } from 'shared/types'
+
 export interface Status {
     timestamp: Date
     errorCode: number
@@ -24,7 +26,7 @@ export interface Fiat {
     symbol: string
 }
 
-export interface Crypto {
+export interface oldCrypto {
     id: number
     rank: number
     name: string
