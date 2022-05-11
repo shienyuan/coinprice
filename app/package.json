@@ -10,6 +10,7 @@
     "deploy": "firebase deploy --only hosting"
   },
   "dependencies": {
+    "algoliasearch": "^4.13.0",
     "axios": "^0.26.1",
     "core-js": "^3.6.5",
     "dayjs": "^1.11.2",
