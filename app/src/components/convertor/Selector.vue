@@ -78,12 +78,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps, ref } from 'vue'
+import { defineEmits, defineProps, ref } from 'vue'
 import { Currency, CurrencyType } from 'shared/types'
-import { ListboxChangeEvent, ListboxFilterEvent } from 'primevue/listbox'
+import { ListboxChangeEvent } from 'primevue/listbox'
 import algolia from 'algoliasearch/lite'
 import Listbox from 'primevue/listbox/Listbox.vue'
 import Dialog from 'primevue/dialog/Dialog.vue'
+import InputText from 'primevue/inputtext/InputText.vue'
 import { FilterService } from 'primevue/api'
 import { asyncComputed } from '@vueuse/core'
 
