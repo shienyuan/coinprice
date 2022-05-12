@@ -2495,9 +2495,9 @@ setprototypeof@1.2.0:
   resolved "https://registry.npmjs.org/setprototypeof/-/setprototypeof-1.2.0.tgz"
   integrity sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==
 
-shared@./shared-v1.0.1.tgz:
-  version "1.0.1"
-  resolved "./shared-v1.0.1.tgz#8e5f8391f304a1dfc7e4a86bf933336589a405a6"
+shared@./shared-v1.0.2.tgz:
+  version "1.0.2"
+  resolved "./shared-v1.0.2.tgz#33868be03ed51899ee699e0281ae88cd4a0d07e6"
 
 shebang-command@^2.0.0:
   version "2.0.0"
