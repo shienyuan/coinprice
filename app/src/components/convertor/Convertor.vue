@@ -151,10 +151,8 @@ const setDefaultValues = () => {
 }
 
 onMounted(async () => {
-    ;[cryptos.value, fiats.value] = await Promise.all([
-        await getCryptos(),
-        await getFiats(),
-    ])
+    fiats.value = getFiats()
+    cryptos.value = await getCryptos()
     setDefaultValues()
     loading.value = false
 })

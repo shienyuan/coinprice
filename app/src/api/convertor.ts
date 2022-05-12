@@ -1,6 +1,7 @@
 import { httpsCallable } from 'firebase/functions'
 import { functions } from '@/plugins/firebase'
 import { Fiat, Crypto, ConvertRequest, ConvertResponse } from 'shared/types'
+import { fiats } from '@/assets/data'
 
 export interface Currency {
     id: number
@@ -14,10 +15,8 @@ export const getCryptos = async (): Promise<Crypto[]> => {
     const resp = await req()
     return resp.data
 }
-export const getFiats = async (): Promise<Fiat[]> => {
-    const req = httpsCallable<void, Fiat[]>(functions, 'getFiats')
-    const resp = await req()
-    return resp.data
+export const getFiats = (): Fiat[] => {
+    return fiats
 }
 
 export const convert = async (
