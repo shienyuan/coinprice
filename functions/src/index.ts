@@ -93,7 +93,7 @@ const updateFiats = async (now: Date): Promise<Fiat[]> => {
     return data.data
 }
 
-export const syncCryptos = fn.onRequest(async (_, resp): Promise<void> => {
+export const syncCryptos = fn.onCall(async (): Promise<string> => {
     let page = 1
 
     const fetch = async () => {
@@ -123,41 +123,44 @@ export const syncCryptos = fn.onRequest(async (_, resp): Promise<void> => {
 
     await fetch()
 
-    resp.json('success')
+    return 'Success'
 })
 
-export const syncCryptoMetadata = fn.onRequest(
-    async (_, resp): Promise<void> => {
-        const cryptos = await db.cryptosCol.get()
-        const ids = cryptos.docs.map((val) => val.data().id)
+export const syncCryptoMetadata = fn.onCall(async (): Promise<string> => {
+    const cryptos = await db.cryptosCol.get()
+    const ids = cryptos.docs.map((val) => val.data().id)
 
-        console.log('syncing ', ids.length)
-        for (let i = 0; i < ids.length; i += 100) {
-            const { data } = await cmcRequest.get('/v2/cryptocurrency/info', {
-                params: {
-                    id: ids.slice(i, i + 100).toString(),
-                    aux: 'logo',
-                },
+    console.log('syncing ', ids.length)
+    for (let i = 0; i < ids.length; i += 100) {
+        const { data } = await cmcRequest.get('/v2/cryptocurrency/info', {
+            params: {
+                id: ids.slice(i, i + 100).toString(),
+                aux: 'logo',
+            },
+        })
+
+        const batch = fs.batch()
+        for (const id of ids.slice(i, i + 100)) {
+            batch.update(db.cryptosCol.doc(id.toString()), {
+                icon: data.data[id]?.logo ? data.data[id].logo : '',
             })
-
-            const batch = fs.batch()
-            for (const id of ids.slice(i, i + 100)) {
-                batch.update(db.cryptosCol.doc(id.toString()), {
-                    icon: data.data[id]?.logo ? data.data[id].logo : '',
-                })
-            }
-            await batch.commit()
         }
-
-        resp.json('success')
+        await batch.commit()
     }
-)
 
-export const syncAlgolia = fn.onRequest(async (_, resp) => {
+    return 'Success'
+})
+
+export const syncCryptoAlgolia = fn.onCall(async (): Promise<string> => {
     const cryptos = await db.cryptosCol.get()
     algoliaIndex.saveObjects(
-        cryptos.docs.map((val) => val.data()),
+        cryptos.docs.map((val) => {
+            return {
+                objectID: val.id,
+                ...val,
+            }
+        }),
         { autoGenerateObjectIDIfNotExist: true }
     )
-    resp.json('success')
+    return 'Success'
 })

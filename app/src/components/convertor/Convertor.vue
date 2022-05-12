@@ -95,6 +95,7 @@ import {
 } from 'shared/types'
 import SelectButton from 'primevue/selectbutton/SelectButton.vue'
 import BlockUI from 'primevue/blockui/BlockUI.vue'
+import InputText from 'primevue/inputtext/InputText.vue'
 import Selector from './Selector.vue'
 import Switcher from './Switcher.vue'
 import { convert, getCryptos, getFiats } from '@/api/convertor'

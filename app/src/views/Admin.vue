@@ -1,66 +1,68 @@
 <template>
     <main>
-        <!--        <Card id="login-form" class="mx-auto" v-if="!loggedIn">-->
-        <!--            <template #content>-->
-        <!--                <InputText-->
-        <!--                    v-model="email"-->
-        <!--                    class="mb-3"-->
-        <!--                    placeholder="Email"-->
-        <!--                    title="123"-->
-        <!--                    type="email"-->
-        <!--                />-->
-        <!--                <InputText-->
-        <!--                    v-model="password"-->
-        <!--                    placeholder="Password"-->
-        <!--                    type="password"-->
-        <!--                />-->
-        <!--            </template>-->
-        <!--            <template #footer>-->
-        <!--                <Button class="w-full" label="Login" @click="handleLogin" />-->
-        <!--            </template>-->
-        <!--        </Card>-->
+        <div class="text-right mb-3">
+            <Button
+                @click="handleLogout"
+                class="ml-auto p-button-secondary p-button-sm"
+                label="Logout"
+            />
+        </div>
 
         <Card>
             <template #content>
-                <Button @click="handleLogout">Logout</Button>
+                <div>
+                    <Button
+                        label="Update Cryptos"
+                        @click="handleUpdateCryptos"
+                    />
+                    <div class="mt-3">
+                        Results:
+                        <p>
+                            Sync with CMC:
+                            <span class="text-green-500">{{
+                                results.syncCrypto
+                            }}</span>
+                        </p>
+                        <p>
+                            Sync metaData with CMC:
+                            <span class="text-green-500">{{
+                                results.syncCryptoMetadata
+                            }}</span>
+                        </p>
+                        <p>
+                            Sync Algolia index:
+                            <span class="text-green-500">{{
+                                results.syncCryptoAlgolia
+                            }}</span>
+                        </p>
+                    </div>
+                </div>
             </template>
         </Card>
     </main>
 </template>
 
 <script lang="ts" setup async>
+import { authSignOut } from '@/plugins/firebase'
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
-import { auth, authSignInEmail, authSignOut } from '@/plugins/firebase'
-import { onAuthStateChanged } from 'firebase/auth'
+import { syncCryptos, syncCryptoMetadata, syncCryptoAlgolia } from '@/api/admin'
 
-const email = ref()
-const password = ref()
-
-const handleLogin = async () => {
-    try {
-        const user = await authSignInEmail(email.value, password.value)
-        console.log(user)
-    } catch (e) {
-        console.error(e)
-    }
-}
+const router = useRouter()
+const results = ref({
+    syncCrypto: '',
+    syncCryptoMetadata: '',
+    syncCryptoAlgolia: '',
+})
 
 const handleLogout = async () => {
-    try {
-        await authSignOut()
-    } catch (e) {
-        console.error(e)
-    }
+    await authSignOut()
+    await router.push('/login')
+}
+
+const handleUpdateCryptos = async () => {
+    results.value.syncCrypto = await syncCryptos()
+    results.value.syncCryptoMetadata = await syncCryptoMetadata()
+    results.value.syncCryptoAlgolia = await syncCryptoAlgolia()
 }
 </script>
-
-<style lang="scss" scoped>
-#login-form {
-    max-width: 420px;
-
-    .p-inputtext {
-        display: block;
-        width: 100%;
-    }
-}
-</style>
