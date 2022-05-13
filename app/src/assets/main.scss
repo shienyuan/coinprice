@@ -6,9 +6,13 @@
 body {
   background: var(--surface-d);
   color: var(--text-color);
-  font-family: sans-serif;
   padding: 0;
   margin: 0;
+  font-family: 'PT Sans', sans-serif;;
+}
+
+.p-component {
+  font-family: 'PT Sans', sans-serif;;
 }
 
 a {
@@ -19,6 +23,7 @@ a {
 .p-inputtext:enabled:focus {
   box-shadow: none !important;
 }
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

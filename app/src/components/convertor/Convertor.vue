@@ -158,10 +158,8 @@ onMounted(async () => {
 })
 </script>
 
-<style lang="scss">
-#convertorMode {
-    .p-button {
-        padding: 0.5rem;
-    }
+<style lang="scss" scoped>
+#convertorMode:deep .p-button {
+    padding: 0.5rem;
 }
 </style>
