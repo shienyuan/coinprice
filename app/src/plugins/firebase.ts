@@ -15,8 +15,8 @@ const configs = {
     authDomain: '***REMOVED***',
     projectId: '***REMOVED***',
     storageBucket: '***REMOVED***.appspot.com',
-    messagingSenderId: ***REMOVED***,
-    appId: '***REMOVED***',
+    messagingSenderId: '***REMOVED***',
+    appId: '1:***REMOVED***:web:2a89c7231c901d5bad311e',
     measurementId: '***REMOVED***',
 }
 
