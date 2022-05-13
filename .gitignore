@@ -143,3 +143,5 @@ node_modules/
 .yarn-integrity
 
 functions/.env
+bfg-replace.txt
+bfg-1.14.0.jar

@@ -14,7 +14,7 @@ var cmc *cmcclient.CMCClient
 
 func main() {
 	app := fiber.New()
-	//cmc = cmcclient.NewCMCClient("pro-api.coinmarketcap.com", "***REMOVED***")
+	//cmc = cmcclient.NewCMCClient("pro-api.coinmarketcap.com", "b5f8749a-ca8f-4175-830a-c62a8558ed3f")
 	cmc = cmcclient.NewCMCClient("sandbox-api.coinmarketcap.com", "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c")
 
 	app.Use(cors.New(cors.ConfigDefault))

@@ -5,7 +5,7 @@ const dayjs = require("dayjs");
 const firebase_1 = require("./firebase");
 const cmcapi_1 = require("./cmcapi");
 const algoliasearch_1 = require("algoliasearch");
-const algoliaClient = (0, algoliasearch_1.default)('***REMOVED***', '563a9906ca3c64651d6b2584780ba5dc');
+const algoliaClient = (0, algoliasearch_1.default)(process.env.AG_APP_ID, process.env.AG_API_KEY);
 const algoliaIndex = algoliaClient.initIndex('cryptos');
 const fetchDataInterval = 30; // day
 exports.getFiats = firebase_1.fn.onCall(async (_, context) => {

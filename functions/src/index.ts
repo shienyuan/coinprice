@@ -6,7 +6,10 @@ import { CryptoResponse, Fiat, FiatResponse } from './types/cmcapi'
 import { ConvertRequest, ConvertResponse } from 'shared/types'
 import algolia from 'algoliasearch'
 
-const algoliaClient = algolia('***REMOVED***', '563a9906ca3c64651d6b2584780ba5dc')
+const algoliaClient = algolia(
+    process.env.AG_APP_ID as string,
+    process.env.AG_API_KEY as string
+)
 const algoliaIndex = algoliaClient.initIndex('cryptos')
 
 const fetchDataInterval = 30 // day
