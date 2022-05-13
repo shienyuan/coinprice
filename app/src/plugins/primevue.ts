@@ -6,7 +6,6 @@ import Card from 'primevue/card'
 export default {
     install: (app: App): void => {
         app.use(Config)
-
         app.component('Button', Button)
         app.component('Card', Card)
     },

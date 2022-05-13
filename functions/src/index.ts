@@ -157,7 +157,7 @@ export const syncCryptoAlgolia = fn.onCall(async (): Promise<string> => {
         cryptos.docs.map((val) => {
             return {
                 objectID: val.id,
-                ...val,
+                ...val.data(),
             }
         }),
         { autoGenerateObjectIDIfNotExist: true }
