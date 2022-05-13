@@ -1,12 +1,12 @@
 <template>
     <nav class="flex justify-content-between align-items-center">
-        <p
+        <h1
             class="m-0 font-bold text-xl cursor-pointer"
             @click="$router.replace('/')"
         >
             CoinPrice
             <span class="font-light text-sm">v{{ version }}</span>
-        </p>
+        </h1>
         <div class="flex align-items-center">
             <Button
                 class="p-button-rounded p-button-info p-button-text"
