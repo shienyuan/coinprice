@@ -2,7 +2,7 @@
     <div class="h-screen py-3 px-4">
         <Navbar class="mb-5 md:mb-8" />
         <router-view />
-        <Footer class="mt-8" />
+        <Footer class="pb-8 mt-3 lg:mt-8" />
     </div>
 </template>
 

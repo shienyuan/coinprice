@@ -113,6 +113,8 @@ watch(
             ? ConvertType.cryptoToFiat
             : ConvertType.cryptoToCrypto
         setDefaultValues()
+        from.value.currency = p.from
+        to.value.currency = p.to
     }
 )
 
