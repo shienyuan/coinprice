@@ -10339,7 +10339,7 @@ sha.js@^2.4.0, sha.js@^2.4.8:
     safe-buffer "^5.0.1"
 
 "shared@file:../shared":
-  version "1.0.2"
+  version "1.0.3"
 
 shebang-command@^1.2.0:
   version "1.2.0"

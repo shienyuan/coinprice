@@ -1,16 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncCryptoAlgolia = exports.syncCryptoMetadata = exports.syncCryptos = exports.convert = exports.getCryptos = void 0;
+exports.syncCryptoAlgolia = exports.syncCryptoMetadata = exports.syncCryptos = exports.getPairs = exports.convert = exports.getCryptos = void 0;
 const firebase_1 = require("./utils/firebase");
 const convert_1 = require("./convert");
 const cryptos_1 = require("./cryptos");
+const recommand_1 = require("./recommand");
 exports.getCryptos = firebase_1.fn.onCall(async (_, { app }) => {
     authCheck(app);
     return await (0, cryptos_1.getCryptosFunc)();
 });
 exports.convert = firebase_1.fn.onCall(async (req, { app }) => {
     authCheck(app);
-    return await (0, convert_1.default)(req);
+    (0, convert_1.addConvertPair)(req.from.currency, req.to.currency);
+    return await (0, convert_1.convertFunc)(req);
+});
+exports.getPairs = firebase_1.fn.onCall(async (_, { app }) => {
+    authCheck(app);
+    const docs = await (0, recommand_1.getPopularPairsFunc)();
+    return docs.map((doc) => doc.data());
 });
 exports.syncCryptos = firebase_1.fn.onCall(async (_, { app }) => {
     authCheck(app);

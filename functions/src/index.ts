@@ -1,13 +1,14 @@
 import { fn, HttpError } from './utils/firebase'
-import { ConvertRequest, ConvertResponse, Crypto } from 'shared/types'
+import { ConvertRequest, ConvertResponse, Crypto, Pair } from 'shared/types'
 import { AppCheckData } from 'firebase-functions/lib/common/providers/https'
-import convertFunc from './convert'
+import { addConvertPair, convertFunc } from './convert'
 import {
     getCryptosFunc,
-    syncCryptosFunc,
-    syncCryptoMetadataFunc,
     syncCryptoAlgoliaFunc,
+    syncCryptoMetadataFunc,
+    syncCryptosFunc,
 } from './cryptos'
+import { getPopularPairsFunc } from './recommand'
 
 export const getCryptos = fn.onCall(async (_, { app }): Promise<Crypto[]> => {
     authCheck(app)
@@ -17,9 +18,16 @@ export const getCryptos = fn.onCall(async (_, { app }): Promise<Crypto[]> => {
 export const convert = fn.onCall(
     async (req: ConvertRequest, { app }): Promise<ConvertResponse> => {
         authCheck(app)
+        addConvertPair(req.from.currency, req.to.currency)
         return await convertFunc(req)
     }
 )
+
+export const getPairs = fn.onCall(async (_, { app }): Promise<Pair[]> => {
+    authCheck(app)
+    const docs = await getPopularPairsFunc()
+    return docs.map((doc) => doc.data())
+})
 
 export const syncCryptos = fn.onCall(async (_, { app }): Promise<string> => {
     authCheck(app)

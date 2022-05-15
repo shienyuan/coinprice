@@ -5,20 +5,11 @@
             @click="handleToggleDialog"
         >
             <div class="flex align-items-center" style="height: 25px">
-                <img
-                    v-if="type === CurrencyType.crypto && modelValue?.icon"
-                    class="mr-2"
-                    :src="modelValue.icon"
-                    :alt="modelValue.icon"
-                    style="height: 25px; width: 25px"
+                <CurrencyText
+                    :icon="modelValue?.icon"
+                    :symbol="modelValue?.symbol"
+                    :type="type"
                 />
-                <span
-                    v-if="type === CurrencyType.fiat && modelValue?.icon"
-                    class="mr-2 text-2xl"
-                    >{{ modelValue.icon }}</span
-                >
-
-                <span>{{ modelValue?.symbol || 'loading...' }}</span>
             </div>
         </Button>
 
@@ -85,6 +76,7 @@ import { ListboxChangeEvent } from 'primevue/listbox'
 import Listbox from 'primevue/listbox/Listbox.vue'
 import Dialog from 'primevue/dialog/Dialog.vue'
 import InputText from 'primevue/inputtext/InputText.vue'
+import CurrencyText from '@/components/CurrencyText.vue'
 import { cryptoIndex } from '@/plugins/algolia'
 import { FilterService } from 'primevue/api'
 import { asyncComputed } from '@vueuse/core'

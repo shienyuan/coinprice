@@ -10,7 +10,7 @@ exports.fn = functions.runWith({
 }).https;
 exports.HttpError = functions.https.HttpsError;
 exports.db = {
-    statsCol: exports.fs.collection(`stats`),
+    pairsCol: exports.fs.collection(`pairs`),
     fiatsCol: exports.fs.collection(`fiats`),
     cryptosCol: exports.fs.collection(`cryptos`),
 };

@@ -1,9 +1,9 @@
 {
   "name": "shared",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "main": "index.js",
   "scripts": {
-    "build": "yarn pkg"
+    "build": "yarn pack"
   },
   "author": "sy97",
   "license": "MIT",

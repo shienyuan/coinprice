@@ -2,8 +2,8 @@
     <BlockUI class="w-full" :blocked="loading">
         <Card>
             <template #title>
-                <div class="flex align-items-center justify-content-between">
-                    <div class="w-8">
+                <div class="lg:flex justify-content-between align-items-center">
+                    <div class="w-8 mb-3 lg:mb-0">
                         <h1 class="text-2xl m-0 mb-2">Convert</h1>
                         <p class="text-base m-0 font-normal p-text-secondary">
                             <span v-if="to.currency && from.currency">
@@ -18,14 +18,14 @@
                         id="convertorMode"
                         v-model="mode"
                         :options="[
-                            ConvertorMode.cryptoToFiat,
-                            ConvertorMode.cryptoToCrypto,
+                            ConvertType.cryptoToFiat,
+                            ConvertType.cryptoToCrypto,
                         ]"
                         @change="handleChangeMode"
                     >
                         <template #option="data">
                             {{
-                                data.option === ConvertorMode.cryptoToFiat
+                                data.option === ConvertType.cryptoToFiat
                                     ? 'Fiat'
                                     : 'Crypto'
                             }}
@@ -85,13 +85,15 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { defineProps, onMounted, ref, watch } from 'vue'
 import {
-    ConvertInput,
-    ConvertorMode,
+    ConvertType,
     Crypto,
+    Currency,
     CurrencyType,
     Fiat,
+    isFiat,
+    Pair,
 } from 'shared/types'
 import SelectButton from 'primevue/selectbutton/SelectButton.vue'
 import BlockUI from 'primevue/blockui/BlockUI.vue'
@@ -100,20 +102,64 @@ import Selector from './Selector.vue'
 import Switcher from './Switcher.vue'
 import { convert, getCryptos, getFiats } from '@/api/convertor'
 
+const props = defineProps<{
+    pair: Pair
+}>()
+
+watch(
+    () => props.pair,
+    (p) => {
+        mode.value = isFiat(p.to)
+            ? ConvertType.cryptoToFiat
+            : ConvertType.cryptoToCrypto
+        setDefaultValues()
+    }
+)
+
 const loading = ref(true)
-const mode = ref<ConvertorMode>(ConvertorMode.cryptoToFiat)
+const mode = ref<ConvertType>(ConvertType.cryptoToFiat)
 const cryptos = ref<Crypto[]>([])
 const fiats = ref<Fiat[]>([])
-const from = ref<ConvertInput>({ type: CurrencyType.crypto })
-const to = ref<ConvertInput>({ type: CurrencyType.fiat })
+
+interface input {
+    type: CurrencyType
+    amount: number | null
+    currency?: Currency
+}
+
+const from = ref<input>({
+    type: CurrencyType.crypto,
+    amount: null,
+})
+const to = ref<input>({
+    type: CurrencyType.fiat,
+    amount: null,
+})
+
 const lastUpdated = ref<Date | null>(null)
 
 const handleConvert = async () => {
     try {
         loading.value = true
+
+        if (
+            !from.value.amount ||
+            from.value.amount <= 0 ||
+            !from.value.currency ||
+            !to.value.currency
+        )
+            return
+
         const resp = await convert({
-            from: from.value,
-            to: to.value,
+            from: {
+                amount: from.value.amount,
+                currency: from.value.currency,
+                type: from.value.type,
+            },
+            to: {
+                currency: to.value.currency,
+                type: to.value.type,
+            },
         })
         to.value.amount = resp.amount
         lastUpdated.value = resp.lastUpdated
@@ -135,7 +181,7 @@ const handleChangeMode = () => {
 }
 
 const setDefaultValues = () => {
-    if (mode.value === ConvertorMode.cryptoToFiat) {
+    if (mode.value === ConvertType.cryptoToFiat) {
         from.value.currency = cryptos.value[0]
         to.value.currency = fiats.value[0]
         from.value.type = CurrencyType.crypto
@@ -146,7 +192,7 @@ const setDefaultValues = () => {
         from.value.type = CurrencyType.crypto
         to.value.type = CurrencyType.crypto
     }
-    from.value.amount = undefined
+    from.value.amount = null
     to.value.amount = 0
 }
 

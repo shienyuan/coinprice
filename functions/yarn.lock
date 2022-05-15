@@ -1359,10 +1359,10 @@ firebase-functions-test@^0.2.0:
     "@types/lodash" "^4.14.104"
     lodash "^4.17.5"
 
-firebase-functions@^3.21.0:
-  version "3.21.0"
-  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-3.21.0.tgz#46b4c771781891929408bd4424959fe552d6cd6c"
-  integrity sha512-Xl0EFV05+RSB9hJHlo12LguoRqAmpSXmBnpI0MANeNj07dGW0QCWPHtaAewxYEzRS3RfSCL8WH12rjvo0PPKGw==
+firebase-functions@^3.21.1:
+  version "3.21.1"
+  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-3.21.1.tgz#5ab56be63bcf4cabd78c82a4f20e031229b4ee64"
+  integrity sha512-wUxJaUEceGpCxa+uAYTQUGM13Uc/mekWfJnhuqqPKr8S09WosoVRpoh1yVQO+AnMqNChq3psLkLxHPubW9Tg2A==
   dependencies:
     "@types/cors" "^2.8.5"
     "@types/express" "4.17.3"
@@ -2495,9 +2495,9 @@ setprototypeof@1.2.0:
   resolved "https://registry.npmjs.org/setprototypeof/-/setprototypeof-1.2.0.tgz"
   integrity sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==
 
-shared@./shared-v1.0.2.tgz:
-  version "1.0.2"
-  resolved "./shared-v1.0.2.tgz#33868be03ed51899ee699e0281ae88cd4a0d07e6"
+shared@./shared-v1.0.4.tgz:
+  version "1.0.4"
+  resolved "./shared-v1.0.4.tgz#491d3a69b94b8e6960f993af64ae190749004309"
 
 shebang-command@^2.0.0:
   version "2.0.0"

@@ -1,5 +1,5 @@
 <template>
-    <div class="h-screen py-3 px-5">
+    <div class="h-screen py-3 px-4">
         <Navbar class="mb-5 md:mb-8" />
         <router-view />
         <Footer class="mt-8" />

@@ -3,20 +3,21 @@ export enum CurrencyType {
   crypto = "crypto",
 }
 
-export enum ConvertorMode {
+export enum ConvertType {
   cryptoToFiat,
   cryptoToCrypto,
 }
 
 export interface ConvertRequest {
-  from: ConvertInput;
-  to: ConvertInput;
-}
-
-export interface ConvertInput {
-  type: CurrencyType;
-  amount?: number;
-  currency?: Currency;
+  from: {
+    type: CurrencyType;
+    amount: number;
+    currency: Currency;
+  };
+  to: {
+    type: CurrencyType;
+    currency: Currency;
+  };
 }
 
 export interface ConvertResponse {
@@ -35,6 +36,10 @@ export interface Fiat extends Currency {
   sign: string;
 }
 
+export const isFiat = (obj: Currency): obj is Fiat => {
+  return "sign" in obj;
+};
+
 export interface Crypto extends Currency {
   rank: number;
   slug: string;
@@ -48,4 +53,10 @@ export interface Crypto extends Currency {
     slug: string;
     tokenAddress: string;
   } | null;
+}
+
+export interface Pair {
+  from: Currency;
+  to: Currency;
+  hits: number;
 }

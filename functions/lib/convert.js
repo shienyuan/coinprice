@@ -1,8 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.addConvertPair = exports.convertFunc = void 0;
 const dayjs = require("dayjs");
 const cmcApi_1 = require("./utils/cmcApi");
-exports.default = async (req) => {
+const firebase_1 = require("./utils/firebase");
+const firestore_1 = require("firebase-admin/firestore");
+const convertFunc = async (req) => {
     if (!req.from.currency || !req.to.currency)
         return {
             amount: 0,
@@ -21,4 +24,21 @@ exports.default = async (req) => {
         lastUpdated: data.last_updated,
     };
 };
+exports.convertFunc = convertFunc;
+const addConvertPair = async (from, to) => {
+    const doc = await firebase_1.db.pairsCol.doc(`${from.symbol}${to.symbol}`).get();
+    if (doc.exists) {
+        await firebase_1.db.pairsCol.doc(`${from.symbol}${to.symbol}`).update({
+            hits: firestore_1.FieldValue.increment(1),
+        });
+    }
+    else {
+        await firebase_1.db.pairsCol.doc(`${from.symbol}${to.symbol}`).set({
+            from,
+            to,
+            hits: 1,
+        });
+    }
+};
+exports.addConvertPair = addConvertPair;
 //# sourceMappingURL=convert.js.map
