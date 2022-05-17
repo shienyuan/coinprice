@@ -2,9 +2,9 @@
     <div>
         <h2 class="mt-0">Popular Pairs</h2>
         <div class="grid">
-            <div class="col-6" v-for="(p, i) in pairs" :key="i">
+            <div class="col lg:col-6 xl:col-4" v-for="(p, i) in pairs" :key="i">
                 <Button
-                    class="p-button-sm p-button-outlined p-button-secondary w-full"
+                    class="p-button-sm p-button-outlined w-full p-button-secondary border-gray-500"
                     @click="$emit('pairSelect', p)"
                 >
                     <div class="w-full flex justify-content-center">

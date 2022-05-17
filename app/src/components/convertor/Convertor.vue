@@ -35,8 +35,13 @@
             </template>
 
             <template #content>
+                <p class="text-sm m-0 mb-2 text-color-secondary">From</p>
                 <div
                     class="flex justify-content-between align-items-center surface-ground border-round p-3"
+                    :class="
+                        showFirstTimeBorder ? 'border-1 border-primary-500' : ''
+                    "
+                    @click="showFirstTimeBorder = false"
                 >
                     <InputText
                         class="w-8 p-inputtext-lg p-0 border-none py-2 bg-transparent"
@@ -56,6 +61,7 @@
 
                 <Switcher :loading="loading" @swap="handleSwap" />
 
+                <p class="text-sm m-0 mb-2 text-color-secondary">To</p>
                 <div
                     class="flex justify-content-between align-items-center surface-ground border-round p-3"
                 >
@@ -75,6 +81,9 @@
                         "
                     />
                 </div>
+                <p class="m-0 mt-2 text-color-secondary" v-if="lastUpdated">
+                    {{ dayjs(lastUpdated).format('LLL') }}
+                </p>
             </template>
 
             <template #footer>
@@ -101,6 +110,9 @@ import InputText from 'primevue/inputtext/InputText.vue'
 import Selector from './Selector.vue'
 import Switcher from './Switcher.vue'
 import { convert, getCryptos, getFiats } from '@/api/convertor'
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+dayjs.extend(localizedFormat)
 
 const props = defineProps<{
     pair: Pair
@@ -119,6 +131,7 @@ watch(
 )
 
 const loading = ref(true)
+const showFirstTimeBorder = ref(true)
 const mode = ref<ConvertType>(ConvertType.cryptoToFiat)
 const cryptos = ref<Crypto[]>([])
 const fiats = ref<Fiat[]>([])
@@ -196,6 +209,7 @@ const setDefaultValues = () => {
     }
     from.value.amount = null
     to.value.amount = 0
+    lastUpdated.value = null
 }
 
 onMounted(async () => {
